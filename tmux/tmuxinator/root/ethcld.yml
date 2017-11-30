@@ -4,7 +4,7 @@ name: ethcld
 root: /srv/ethcld/ethcld/
 
 # Runs before everything. Use it to start daemons etc.
-pre: sudo -i && systemctl start postgresql rabbitmq-server redis ethcld_slicing_worker tserver uwsgi nginx
+pre: systemctl start postgresql rabbitmq-server redis ethcld_slicing_worker tserver uwsgi nginx
 
 # Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
 

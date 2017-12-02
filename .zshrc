@@ -29,8 +29,6 @@ function emulator { (cd "$(dirname "$(whence -p emulator)")" && ./emulator "$@";
 # autosuggestions plugin
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# Swap Ctrl and Caps
-/usr/bin/xmodmap ~/.Xmodmap
 export ANDROID_HOME=/home/vivek/Android/Sdk
 export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/platform-tools
@@ -54,3 +52,5 @@ alias clar=clear
 alias clra=clear
 alias exiy=exit
 alias exi=exit
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

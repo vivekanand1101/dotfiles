@@ -54,7 +54,10 @@ set cursorcolumn
 " highlight the 80 char line
 set cc=80
 
+" Some toggles
 set pastetoggle=<F9>
+nnoremap <F5> :UndotreeToggle<cr>
+map <F3> :NERDTreeToggle<CR>
 
 " hidden startup messages
 set shortmess=atI
@@ -99,7 +102,6 @@ set hlsearch
 set ignorecase
 " muting search highlighting 
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
-nnoremap <F5> :UndotreeToggle<cr>
 
 " syntax highlight on
 syntax on
@@ -166,8 +168,6 @@ set timeoutlen=1000 ttimeoutlen=0
 
 " NERDTree ----------------------------- 
 
-" toggle nerdtree display
-map <F3> :NERDTreeToggle<CR>
 " don;t show these file types
 let NERDTreeIgnore = ['\.pyc$', '\.pyo$']
 

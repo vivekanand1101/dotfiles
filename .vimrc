@@ -11,23 +11,22 @@ Plug 'scrooloose/nerdtree'
 "" Relative numbering
 Plug 'myusuf3/numbers.vim'
 "" Code commenter
-Plug 'scrooloose/nerdcommenter', { 'on': 'NERDTreeToggle' }
+Plug 'scrooloose/nerdcommenter'
 "" Airline uses this to show current branch
 Plug 'tpope/vim-fugitive'
 "" Airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 "" Better autocompletion
-Plug 'Shougo/neocomplcache.vim'
+Plug 'Valloric/YouCompleteMe'
 "" Git/mercurial/others diff icons on the side of the file lines
 Plug 'mhinz/vim-signify'
 "" Python and other languages code checker
-Plug 'scrooloose/syntastic'
+Plug 'vim-syntastic/syntastic'
 "" Paint css colors with the real color
 Plug 'lilydjwg/colorizer', { 'for': ['javascript', 'html', 'css'] }
 "" For JS
 Plug 'pangloss/vim-javascript', { 'for': ['javascript'] }
-Plug 'peterhoeg/vim-qml', { 'for': 'qml' }
 " Fuzzy finder: fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -38,7 +37,17 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'Glench/Vim-Jinja2-Syntax'
+Plug 'google/yapf', { 'rtp': 'plugins/vim', 'for': 'python' }
+" snippets
+Plug 'SirVer/ultisnips'
+" Snipmate and Ultisnips snippets
+Plug 'honza/vim-snippets'
+
 call plug#end()
+
+" change leader key to , (comma)
+let mapleader = ","
+let g:mapleader = ","
 
 set hidden
 " don't use \t, use 4 spaces instead
@@ -51,13 +60,11 @@ set shiftwidth=4
 set cursorline
 set cursorcolumn
 
-" highlight the 80 char line
-set cc=80
+" highlight the 100 char line
+set cc=100
 
 " Some toggles
-set pastetoggle=<F9>
-nnoremap <F5> :UndotreeToggle<cr>
-map <F3> :NERDTreeToggle<CR>
+set pastetoggle=,p
 
 " hidden startup messages
 set shortmess=atI
@@ -80,16 +87,13 @@ set backspace=indent,eol,start
 
 " readme in numbers.vim plugin wars for vim >= 7.4
 set number
+set clipboard=unnamed
 
 " tab length exceptions on some file types
 " Use 2 space for tab in html/js files
  autocmd FileType html setlocal shiftwidth=2 tabstop=2 softtabstop=2
  autocmd FileType htmldjango setlocal shiftwidth=2 tabstop=2 softtabstop=2
  autocmd FileType javascript setlocal shiftwidth=2 tabstop=2 softtabstop=2
-
-" auto open or close NERDTree
-" autocmd vimenter * if !argc() | NERDTree | endif
-" autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 " always show status bar
 " Airline needs this
@@ -102,9 +106,14 @@ set hlsearch
 set ignorecase
 " muting search highlighting 
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+" map <C-Y> :call yapf#YAPF()<cr>
+" map <C-Y> <c-o>:call yapf#YAPF()<cr>
 
 " syntax highlight on
 syntax on
+
+" matching brackets when cursor on it
+set showmatch
 
 " show line numbers
 set nu
@@ -187,56 +196,21 @@ let g:syntastic_mode_map = { 'mode': 'passive' }
 :command Sc :SyntasticCheck
 
 " Check pylint for python and eslint for js
-let g:syntastic_python_checkers = ['pylint']
+let g:syntastic_python_checkers = ['pylint', 'flake8', 'yapf']
 let g:syntastic_javascript_checkers = ['eslint']
 
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-" Use neocomplcache.
-let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_ignore_case = 1
-" Use smartcase.
-let g:neocomplcache_enable_smart_case = 1
-let g:neocomplcache_enable_auto_select = 1
-
-let g:neocomplcache_enable_fuzzy_completion = 1
-let g:neocomplcache_enable_camel_case_completion = 1
-let g:neocomplcache_enable_underbar_completion = 1
-let g:neocomplcache_fuzzy_completion_start_length = 1
-let g:neocomplcache_auto_completion_start_length = 1
-let g:neocomplcache_manual_completion_start_length = 1
-" Set minimum syntax keyword length.
-let g:neocomplcache_min_keyword_length = 1
-let g:neocomplcache_min_syntax_length = 1
-let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
-" complete with workds from any opened file
-let g:neocomplcache_same_filetype_lists = {}
-let g:neocomplcache_same_filetype_lists._ = '_'
-" <TAB>: completion.
+" Tab
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" Define keyword.
-if !exists('g:neocomplcache_keyword_patterns')
-    let g:neocomplcache_keyword_patterns = {}
-endif
-let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
-" Plugin key-mappings.
-inoremap <expr><C-g>     neocomplcache#undo_completion()
-inoremap <expr><C-l>     neocomplcache#complete_common_string()
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y>  neocomplcache#close_popup()
-inoremap <expr><C-e>  neocomplcache#cancel_popup()
 
 
 " Signify ------------------------------
-
-" The VCS list
-" I am relatively new to tech so only introduced to git
 let g:signify_vcs_list = [ 'git' ]
+
+
 " mappings to jump to changed blocks
 nmap <leader>sn <plug>(signify-next-hunk)
 nmap <leader>sp <plug>(signify-prev-hunk)
+
 " nicer colors
 highlight DiffAdd           cterm=bold ctermbg=none ctermfg=119
 highlight DiffDelete        cterm=bold ctermbg=none ctermfg=167
@@ -258,8 +232,6 @@ function! AirlineInit()
 endfunction
 autocmd VimEnter * call AirlineInit()
 
-" to use fancy symbols for airline, uncomment the following lines and use a
-" patched font (more info on the README.rst)
 if !exists('g:airline_symbols')
    let g:airline_symbols = {}
 endif
@@ -279,3 +251,17 @@ endfunction
 autocmd BufNewFile * normal G
 
 let g:fzf_action = {'ctrl-n': 'tab split','ctrl-x': 'split', 'ctrl-v': 'vsplit' }
+
+map <Leader>t :NERDTreeToggle<CR>
+map <Leader>f :YcmCompleter GoToReferences<CR>
+map <Leader>c :YcmCompleter GoToDeclaration<CR>
+map <Leader>d :YcmCompleter GoToDefinition<CR>
+
+" Ultisnips by default uses <tab> for expansion which conflicts with
+" YouCompleteMe.
+let g:UltiSnipsExpandTrigger=",s"
+let g:UltiSnipsJumpForwardTrigger=",d"
+let g:UltiSnipsJumpBackwardTrigger=",b"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
